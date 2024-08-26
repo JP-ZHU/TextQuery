@@ -13,6 +13,13 @@ private:
 public:
     QueryResult(std::string s,std::shared_ptr<std::set<line_no>> p,std::shared_ptr<std::vector<std::string>> f):
     sought(s),lines(p),file(f){}
+    auto get_file(){return file;}
+    auto begin()const->decltype(lines->begin()){
+        return lines->begin();
+    }
+    auto end()const->decltype(lines->end()){
+        return lines->end();
+    }
     ~QueryResult();
 };
 
