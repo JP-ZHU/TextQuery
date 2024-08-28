@@ -2,6 +2,7 @@
 #define QUERYRESULT_H
 
 #include "TextQuery.h"
+using line_no=std::vector<std::string>::size_type;//定义类型别名方便代码书写
 //保存文件扫描结果，输入查询结果
 class QueryResult
 {

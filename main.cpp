@@ -5,6 +5,7 @@
 #include "TextQuery.h"
 #include "QueryResult.h"
 
+
 //输出查询结果
 std::ostream &print(std::ostream& os,const QueryResult &qr){
     auto plural=qr.lines->size()>1?"times":"time";
@@ -15,6 +16,7 @@ std::ostream &print(std::ostream& os,const QueryResult &qr){
     }
     return os;
 }
+
 
 void runQueries(std::ifstream &infile){
     //扫描文件，保存结果

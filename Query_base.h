@@ -1,8 +1,9 @@
 #ifndef QUERY_BASE_H
 #define QUERY_BASE_H
 
-#include<string>
+class TextQuery;
 
+#include<string>
 #include "QueryResult.h"
 #include "TextQuery.h"
 
@@ -38,7 +39,7 @@ private:
     Query(std::shared_ptr<Query_base> query):q(query){}
 
 public:
-    Query BuildTree(const std::string&);//接受输入的子句，返回一个query对象，构建对象树
+    Query QueryTree(const std::string&);//接受输入的子句，返回一个query对象，构建对象树
     Query(const std::string&);//构建wordquery对象
     QueryResult eval(const TextQuery &t)const{return q->eval(t);}//
     std::string rep()const {return q->rep();}

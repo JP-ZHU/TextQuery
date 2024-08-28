@@ -22,13 +22,16 @@ TextQuery::TextQuery(std::ifstream &is):file(new std::vector<std::string>)
 
 TextQuery::~TextQuery(){}
 //传入的是查询单词，来自wordquery的调用
-QueryResult TextQuery::query(const std::string& sought)const{
+QueryResult TextQuery::query(const Query& q)const{
+    /*
     static std::shared_ptr<std::set<line_no>> nodata(new std::set<line_no>);
-    auto loc=wm.find(sought);
+    auto loc=wm.find();
     if(loc==wm.end())
         return QueryResult(sought,nodata,file);
     else 
         return QueryResult(sought,loc->second,file);
+    */
+   return q.eval(this);
 }
 /*
 //查询单词

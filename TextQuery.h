@@ -21,7 +21,7 @@ private:
     std::map<std::string,std::shared_ptr<std::set<line_no>> >wm;//单词与指向存储所在行号的set的智能指针映射
 public:
     TextQuery(std::ifstream&);//构造函数，接受一个文件
-    QueryResult query(const std::string& s)const;//s应该为整个查询子句
+    QueryResult query(const Query& q)const;//s应该为整个查询子句
     ~TextQuery();
 };
 

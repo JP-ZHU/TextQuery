@@ -6,16 +6,49 @@ std::ostream& operator<<(std::ostream& os,const Query& query){
     return os<<query.rep();
 }
 
-Query Query::BuildTree(const std::string& s){
-    std::stack<std::string> stk;
-    //情况1：只含有单词，不含任何括号，运算符
-    if(s[0]!='('&&s[0]!='~'){
+//处理子句，返回最外层逻辑运算符的位置
+int split(const std::string& s){
+    std::stack<char> stk;
+    int idx=1;
+    while(idx!=s.size()-1){
+        if((s[idx]=='&'||s[idx]=='|')&&stk.empty()){
+            return idx;
+        }
+        if(s[idx]==')'){
+            while(stk.top()!='('){
+                stk.pop();
+            }
+            stk.pop();
+        }
+        else{
+            stk.push(s[idx]);
+        }
+    }
+    return -1;
+}
+
+Query Query::QueryTree(const std::string& s){
+    //情况1：括号开头，调用二元逻辑运算
+    if(s[0]=='('){
+        int pos=split(s);
+        std::string ls,rs;
+        ls=s.substr(1,pos-1);
+        rs=s.substr(pos+1,s.size()-2-pos);
+        if(s[pos]=='&')
+            return QueryTree(ls)&QueryTree(rs);
+        else if(s[pos]=='|')
+            return QueryTree(ls)|QueryTree(rs);
+    }
+    //情况2：~开头，调用notquery
+    if(s[0]=='~'){
+        std::string ls=s.substr(2,s.size()-1-2);
+        return QueryTree(ls);
+    }
+    //情况3：只含有单词，不含任何括号，运算符，调用wordquery
+    else{
         return Query(s);
     }
-    if(s[0]=='('){
-        std::string ls,rs;
-        std::string::iterator oprand=
-    }
+    
 }
 
 QueryResult OrQuery::eval(const TextQuery& text)const{
