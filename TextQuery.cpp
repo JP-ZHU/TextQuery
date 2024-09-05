@@ -1,6 +1,9 @@
+#include<iostream>
 #include "TextQuery.h"
 #include "QueryResult.h"
 #include "Query_base.h"
+
+class QueryResult;
 //逐行读取输入文件，建立单词到行号的映射
 TextQuery::TextQuery(std::ifstream &is):file(new std::vector<std::string>)
 {
@@ -20,21 +23,15 @@ TextQuery::TextQuery(std::ifstream &is):file(new std::vector<std::string>)
     }
 }
 
-TextQuery::~TextQuery(){}
-//传入的是查询单词，来自wordquery的调用
-QueryResult TextQuery::query(const Query& q)const{
-    /*
-    static std::shared_ptr<std::set<line_no>> nodata(new std::set<line_no>);
-    auto loc=wm.find();
-    if(loc==wm.end())
-        return QueryResult(sought,nodata,file);
-    else 
-        return QueryResult(sought,loc->second,file);
-    */
-   return q.eval(this);
+TextQuery::~TextQuery(){};
+Query QueryTree(const std::string& s);
+
+QueryResult TextQuery::query_clause(const std::string& s)const{
+    std::cout<<"querytree going to be called"<<std::endl;
+    Query q=QueryTree(s);
+    return q.eval(*this);//*this即调用该函数的输入文本对象
 }
-/*
-//查询单词
+//仅对单个词汇的查询
 QueryResult TextQuery::query(const std::string &sought)const{
     static std::shared_ptr<std::set<line_no>> nodata(new std::set<line_no>);//局部静态变量，存储查找失败的结果
     auto loc=wm.find(sought);
@@ -45,4 +42,3 @@ QueryResult TextQuery::query(const std::string &sought)const{
         return QueryResult(sought,loc->second,file);
     }
 }
-*/

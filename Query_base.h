@@ -2,10 +2,10 @@
 #define QUERY_BASE_H
 
 class TextQuery;
+class QueryResult;
 
 #include<string>
 #include "QueryResult.h"
-#include "TextQuery.h"
 
 //抽象基类
 class Query_base
@@ -41,8 +41,8 @@ private:
 public:
     Query QueryTree(const std::string&);//接受输入的子句，返回一个query对象，构建对象树
     Query(const std::string&);//构建wordquery对象
-    QueryResult eval(const TextQuery &t)const{return q->eval(t);}//
-    std::string rep()const {return q->rep();}
+    QueryResult eval(const TextQuery &t)const{return q->eval(t);}//调用base类的eval
+    std::string rep()const {return q->rep();}//调用base类的rep
     ~Query()=default;
 };
 inline Query::Query(const std::string& s):q(new WordQuery(s)){}
