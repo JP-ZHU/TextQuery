@@ -1,16 +1,20 @@
+/**
+ * @description: 
+ * 保存查询结果的类，并提供print函数完成打印工作
+ * @return {*}
+ */
 #ifndef QUERYRESULT_H
 #define QUERYRESULT_H
 
-
 #include "TextQuery.h"
 
-using line_no=std::vector<std::string>::size_type;//定义类型别名方便代码书写
-//保存文件扫描结果，输入查询结果
+using line_no=std::vector<std::string>::size_type;
+
 class QueryResult
 {
     friend std::ostream& print(std::ostream&,const QueryResult&);
 private:
-    std::string sought;//待查询的单词
+    std::string sought;//保存查询的单词
     std::shared_ptr<std::set<line_no>> lines;//出现的行号
     std::shared_ptr<std::vector<std::string>> file;//输入文件
 public:
@@ -23,7 +27,7 @@ public:
     auto end()const->decltype(lines->end()){
         return lines->end();
     }
-    ~QueryResult();
+    ~QueryResult()=default;
 };
 
 #endif

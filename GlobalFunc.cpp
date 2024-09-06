@@ -1,12 +1,19 @@
+/**
+ * @description: 全局函数文件
+ */
 #include<stack>
 #include<string>
 #include<iostream>
 #include<cctype>
+
 #include "Query_base.h"
 
 class Query;
 
-//处理字符串，只保留字母，去除标点符号
+/**
+ * @description: 
+ * 处理字符串，去除标点符号只保留字母
+ */
 std::string extractWord(const std::string& text){
     std::string cleanText;
     for(char c:text){
@@ -17,14 +24,17 @@ std::string extractWord(const std::string& text){
     return cleanText;
 }
 
-//处理子句，返回最外层逻辑运算符的位置
-int split(const std::string& s){
+/**
+ * @description: 
+ * 栈括号匹配实现查找最外层逻辑运算符
+ * @param {string&} s 子查询对象
+ * @return {*} 返回逻辑运算符所在位次
+ */
+int extractSymbol(const std::string& s){
     std::stack<char> stk;
     int idx=1;
     while(idx!=s.size()-1){
         if((s[idx]=='&'||s[idx]=='|')&&stk.empty()){
-            std::cout<<"split func exeted with output"<<idx<<std::endl;
-            std::cout<<"$$"<<s[idx]<<"$$"<<std::endl;
             return idx;
         }
         else if(s[idx]==')'){
@@ -40,38 +50,33 @@ int split(const std::string& s){
     return -1;
 }
 
-    Query QueryTree(const std::string& s){
-         //std::cout << "Input string length: " << s.length() << std::endl;
-         //std::cout << "Input string: " << s << std::endl;
-        //情况1：括号开头，调用二元逻辑运算
-        if(s[0]=='('){
-            std::cout << "Checking if starts with ( - character is: " << s[0] << std::endl;
-            std::cout<<"situation 1 executed"<<std::endl;
-            int pos=split(s);
-            std::cout<<"the result of split func is:"<<pos<<std::endl;
-            std::string ls,rs;
-            ls=s.substr(1,pos-1);
-            rs=s.substr(pos+1,s.size()-2-pos);
-            if(s[pos]=='&'){
-                std::cout << "$$Building AndQuery with left: " << ls << " and right: " << rs << std::endl;
-                return QueryTree(ls)&QueryTree(rs);
-            }
-            else if(s[pos]=='|'){
-                std::cout << "$$Building OrQuery with left: " << ls << " and right: " << rs << std::endl;
-                return QueryTree(ls)|QueryTree(rs);
-            }
+/**
+ * @description: 
+ * 递归构造Query对象查询树
+ * @param {string&} s 输入的查询子句
+ * @return {*} 返回Query对象
+ */
+Query QueryTree(const std::string& s){
+    //情况1：子句为括号开头，调用二元逻辑运算
+    if(s[0]=='('){
+        int pos=extractSymbol(s);
+        std::string ls,rs;
+        ls=s.substr(1,pos-1);
+        rs=s.substr(pos+1,s.size()-2-pos);
+        if(s[pos]=='&'){
+            return QueryTree(ls)&QueryTree(rs);
         }
-        //情况2：~开头，调用notquery
-        if(s[0]=='~'){
-            std::cout<<"situation 2 executed"<<std::endl;
-            std::string ls=s.substr(2,s.size()-1-2);
-            std::cout << "$$Building NotQuery with left: " << ls << std::endl;
-            return ~QueryTree(ls);
-        }
-        //情况3：只含有单词，不含任何括号，运算符，调用wordquery
-        else{
-            std::cout<<"situation 3 executed"<<std::endl;
-            std::cout << "$$Building WordQuery with clause: " << s << std::endl;
-            return Query(s);
+        else if(s[pos]=='|'){
+            return QueryTree(ls)|QueryTree(rs);
         }
     }
+    //情况2：子句~开头，调用notquery
+    if(s[0]=='~'){
+        std::string ls=s.substr(2,s.size()-1-2);
+        return ~QueryTree(ls);
+    }
+    //情况3：只含有单词，不含任何括号，运算符
+    else{
+        return Query(s);
+    }
+}
